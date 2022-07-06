@@ -9,10 +9,10 @@ from urllib.parse import quote_plus
 
 def mongo_connect(login='', password='', server='localhost', port=27017, db=''):
     if login:
-        url = "mongodb://%s:%s@%s:%s/%s" % (quote_plus(login), quote_plus(password),
-                                            quote_plus(server), port, quote_plus(db))
+        url = f"mongodb://{quote_plus(login)}:{quote_plus(password)}@{quote_plus(server)}:{port}/{quote_plus(db)}"
+
     else:
-        url = "mongodb://%s:%s/%s" % (quote_plus(server), port, quote_plus(db))
+        url = f"mongodb://{quote_plus(server)}:{port}/{quote_plus(db)}"
     try:
         client = MongoClient(url)
         client.admin.command('ismaster')
@@ -53,8 +53,10 @@ def find_cheapest(db_object, column_find='Цена'):
 
 
 def find_by_name(db_object, name_find, column_find, column_sort='Цена'):
-    artist = db_object.find({column_find: {'$regex': '.*%s.*' % name_find,
-                                           '$options': 'i'}}).sort(column_sort, ASCENDING)
+    artist = db_object.find(
+        {column_find: {'$regex': f'.*{name_find}.*', '$options': 'i'}}
+    ).sort(column_sort, ASCENDING)
+
     pprint(list(artist))
 
 
